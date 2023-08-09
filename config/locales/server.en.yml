@@ -1,6 +1,7 @@
 en:
   site_settings:
     chatbot_enabled: "Enable the chatbot plugin"
+    chatbot_open_ai_uri_base: "Base URI of API end point, default https://api.openai.com"
     chatbot_open_ai_token: "Your Open AI token. You can get one at <a target='_blank' rel='noopener' href='https://platform.openai.com/account/api-keys/'>openai.com</a>"
     chatbot_open_ai_model_custom: "Use Custom model name (ADVANCED USERS ONLY)"
     chatbot_open_ai_model_custom_name: "(CUSTOM ONLY) Name of model"
