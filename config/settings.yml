@@ -4,6 +4,9 @@ plugins:
     client: true
   chatbot_permitted_in_private_messages:
     default: true
+    client: true
+  chatbot_include_inner_thoughts_in_private_messages:
+    default: false
     client: false
   chatbot_permitted_in_chat:
     default: true
@@ -11,11 +14,14 @@ plugins:
   chatbot_can_trigger_from_whisper:
     default: false
     client: false
-  chatbot_quick_access_chat_button:
+  chatbot_quick_access_talk_button:
     default: true
     client: true
-  chatbot_quick_access_chat_button_only_on_homepage:
-    default: true
+  chatbot_quick_access_bot_user_icon: 
+      client: true
+      default: robot
+  chatbot_quick_access_talk_in_private_message:
+    default: false
     client: true
   chatbot_permitted_all_categories:
     default: true
@@ -69,8 +75,6 @@ plugins:
       - gpt-3.5-turbo-16k
       - gpt-4
       - gpt-4-32k
-      - text-davinci-003
-      - text-davinci-002
   chatbot_reply_job_time_delay:
     client: false
     default: 0
@@ -78,19 +82,28 @@ plugins:
   chatbot_open_ai_token:
     client: false
     default: ''
+  chatbot_bot_type:
+    default: 'normal'
+    client: false
+    type: enum
+    choices:
+      - normal
+      - agent
   chatbot_open_ai_model_custom:
     default: false
     client: false
   chatbot_open_ai_model_custom_name:
     default: ''
     client: false
-  chatbot_open_ai_model_custom_type:
-    default: 'chat'
+  chatbot_open_ai_model_custom_url:
     client: false
-    type: enum
-    choices:
-      - chat
-      - completions
+    default: ''
+  chatbot_open_ai_model_custom_api_type:
+    client: false
+    default: ''
+  chatbot_open_ai_model_custom_api_version:
+    client: false
+    default: '2023-05-15'
   chatbot_request_temperature:
     client: false
     default: 100
@@ -117,7 +130,21 @@ plugins:
   chatbot_bot_user:
     client: true
     type: username
-    default: AIBot
+    default: Chatbot
+  chatbot_embeddings_benchmark_user_trust_level: 
+    client: false
+    default: 1
+    min: 0
+    max: 4
   chatbot_enable_verbose_console_response_progress_logging:
     client: false
     default: false
+  chatbot_news_api_token:
+    client: false
+    default: ''
+  chatbot_serp_api_key:
+    client: false
+    default: ''
+  chatbot_marketstack_key:
+    client: false
+    default: ''

@@ -1,23 +1,29 @@
 en:
   site_settings:
     chatbot_enabled: "Enable the chatbot plugin"
-    chatbot_open_ai_token: "Your Open AI token. You can get one at <a target='_blank' rel='noopener' href='https://platform.openai.com/account/api-keys/'>openai.com</a>"
+    chatbot_open_ai_token: "Your Open AI token. Will also be used as token if you set a custom URL to service other than Open AI. You can get one at <a target='_blank' rel='noopener' href='https://platform.openai.com/account/api-keys/'>openai.com</a>"
+    chatbot_bot_type: "EXPERIMENTAL: To make the bot smarter, use 'agent' (but be aware this uses many more calls to the LLM increasing cost significantly!)"
     chatbot_open_ai_model_custom: "Use Custom model name (ADVANCED USERS ONLY)"
     chatbot_open_ai_model_custom_name: "(CUSTOM ONLY) Name of model"
     chatbot_open_ai_model_custom_type: "(CUSTOM ONLY) IMPORTANT: Select which type of Open AI endpoint should be used, Chat (ChatGPT style), or Completion (Davinci style) - will break if you select wrong type"
+    chatbot_open_ai_model_custom_url: "Populate it if you want to use proxy to Open AI or Azure OpenAI, e.g. https://custom-domain.openai.azure.com/openai/deployments/custom-name)."
+    chatbot_open_ai_model_custom_api_type: "Fill in 'azure' if you use Azure OpenAI, otherwise will use Open AI"
+    chatbot_open_ai_model_custom_api_version: "Fill in Azure OpenAI REST API version, default to '2023-05-15'. Required only when 'custom_api_type' is set to 'azure'. Refer to: <a target='_blank' rel='noopener' href='https://learn.microsoft.com/en-us/azure/ai-services/openai/reference'>Azure REST API reference</a>"
     chatbot_open_ai_model: "(UNLESS CUSTOM) The model to be accessed. More on supported models at <a target='_blank' rel='noopener' href='https://platform.openai.com/docs/models/overview'>OpenAI: Model overview</a>"
     chatbot_reply_job_time_delay: 'Number of seconds before reply job is run. This helps prevent rate limits being hit and discourages spamming.'
     chatbot_include_whispers_in_post_history: "Include content of whispers in Post history bot sees (careful!)"
     chatbot_max_look_behind: "Maximum number of Posts or Chat Messages bot will consider as prompt for completion, the more the more impressive may be its response, but the more costly the interaction will be."
     chatbot_strip_quotes: "Determine if quotes are stripped and not sent within prompts (doesn't affect OP)"
     chatbot_permitted_in_private_messages: "Allow Chatbot to interact in Private Messages"
+    chatbot_include_inner_thoughts_in_private_messages: "EXPERIMENTAL: Get Chatbot to post its background thinking on Private Messages (Agent only)"
     chatbot_permitted_in_chat: "Allow Chatbot to interact in Chat"
     chatbot_can_trigger_from_whisper: "Allow Chatbot to be triggered from a whisper (get creative!)"
     chatbot_permitted_all_categories: "Allow Chatbot to interact in any Category"
     chatbot_permitted_categories: "Allow Chatbot to interact only in these Categories if not allowed to play in all"
     chatbot_bot_user: "The Chatbot User"
-    chatbot_quick_access_chat_button: "Display floating button which links to direct Chat with the bot"
-    chatbot_quick_access_chat_button_only_on_homepage: "Display floating direct-bot-chat button only on homepage"
+    chatbot_quick_access_talk_button: "Display floating button which links to direct discussion one-to-one with the bot"
+    chatbot_quick_access_bot_user_icon: "Name of icon used for floating quick bot access button.  If blank it will use bot user's avatar instead. (if icon make sure it's permitted and added to svg_icon_subset if necessary)"
+    chatbot_quick_access_talk_in_private_message: "Quick access talk button takes you to Personal Message instead of Chat"
     chatbot_quota_high_trust: "The allowed number of bot responses allowed by prompting user per week - high trust groups"
     chatbot_quota_medium_trust: "The allowed number of bot responses allowed by prompting user per week - medium trust groups"
     chatbot_quota_low_trust: "The allowed number of bot responses allowed by prompting user per week - low trust groups"
@@ -29,15 +35,110 @@ en:
     chatbot_request_frequency_penalty: "Numeric value within the range of -200 to 200. Refer to: <a target='_blank' rel='noopener' href='https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty'>API docs: frequency_penalty</a>"
     chatbot_request_presence_penalty: "Numeric value within the range of -200 to 200. Refer to: <a target='_blank' rel='noopener' href='https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty'>API docs: presence_penalty</a>"
     chatbot_max_response_tokens: "Specify the maximum amount of tokens bot will use to generate a response. Refer to: <a target='_blank' rel='noopener' href='https://openai.com/pricing'>OpenAI: Pricing</a>"
+    chatbot_embeddings_benchmark_user_trust_level: "Trust level of benchmark user used to determine which Posts are embedded.  If this benchmark user can access a Post & it is not a Personal Message, it will be emdedded and content derived from such posts may be shared with all users.  Be careful not to unintentionally leak privileged information to lower trust levels so general advice is to keep this 0 or 1, but depends on the structure of your community and forum"
     chatbot_enable_verbose_console_response_progress_logging: "Enable response retrieval progress logging to console to help debug issues"
+    chatbot_news_api_token: "News API token for news (if left blank, news will never be searched)<a target='_blank' rel='noopener' href='https://newsapi.org/'>Get one at NewsAPI.org</a>"
+    chatbot_serp_api_key: "Serp API token for google search (if left blank, google will never be searched). <a target='_blank' rel='noopener' href='https://serpapi.com/'>Get one at SerpAPI.com</a>"
+    chatbot_marketstack_key: "Marketstack API key for stock price information (if left blank, Marketstack will never be queried).<a target='_blank' rel='noopener' href='https://marketstack.com/'>Get one at MarketStack.com</a>"
 
   chatbot:
-    bio: "Hi, I’m not a real person. I’m a bot that can discuss things with you. Don't take me too seriously. Sometimes, I'm even right about stuff!"
+    bio: "Hi, I'm not a real person. I'm a bot that can discuss things with you. Don't take me too seriously. Sometimes, I'm even right about stuff!"
     prompt:
-      system: "You are a helpful assistant."
+      system:
+        basic: "You are a helpful assistant."
+        agent: "You are a helpful assistant.  You have great tools in the form of functions that give you the power to get newer information. Only use the functions you have been provided with.  The current date and time is %{current_date_time}.  Only respond to the last question, using the prior information as context, if appropriate."
       title: "The subject of this conversation is %{topic_title}"
       first_post: "The first thing someone said was %{username} who said %{raw}"
       post: "%{username} said %{raw}"
+      function:
+        calculator:
+          description: |
+            Useful for getting the result of a math expression.  It is a general purpose calculator.  It works with Ruby expressions.
+
+            You can retrieve the current date from it too and using the core Ruby Time method to calculate dates.
+
+            The input to this tool should be a valid mathematical expression that could be executed by the base Ruby programming language with no extensions.
+
+            Be certain to prefix any functions with 'Math.'
+
+            Usage:
+              Action Input: 1 + 1
+              Action Input: 3 * 2 / 4
+              Action Input: 9 - 7
+              Action Input: Time.now - 2 * 24 * 60 * 60
+              Action Input: Math.cbrt(13) + Math.cbrt(12)
+              Action Input: Math.sqrt(8)
+              Action Input: (4.1 + 2.3) / (2.0 - 5.6) * 3
+          parameters:
+            input: the mathematical expression you need to process and get the answer to. Make sure it is Ruby compatible.
+          error: "'%{parameter}' is an invalid mathematical expression, make sure if you are trying to calculate dates use Ruby Time class"
+        forum_search:
+          description: |
+            Search the local forum for information that may help you answer the question.  Especially useful when the forum specialises in the subject matter of the query.
+            Searching the local forum is preferable to searching google or the internet and should be considered higher priority.  It is quicker and cheaper.
+
+            Input should be a search query.  You can optionally also specify the number of posts you wish returned from your query.
+
+            Outputs text from the Post and a url link to it you can provide the user.  When presenting the url in your reply, do not embed in an anchor, just write the straight link.
+          parameters:
+            query: "search query for looking up information on the forum"
+            number_of_posts: "specify the number of posts you want returned from your query"
+          answer_summary: "The top %{number_of_posts} posts on the forum related to this query are, best match first:\n\n"
+          answer: "Number %{rank}: the post is at this web address: %{url}, it was written by '%{username}' on %{date} and the text is '%{raw}'.\n\n"
+          error:  "'%{query}': my search for this on the forum failed."
+        google_search:
+          description: |
+            A wrapper around Google Search.
+
+            Useful for when you need to answer questions about current events.
+            Always one of the first options when you need to find information on internet.
+
+            Input should be a search query.
+          parameters:
+            query: "search query for looking up information on the internet"
+          error: "%{query}: my search for this on the internet failed."
+        news:
+          description: |
+            A wrapper around the News API.
+
+            Useful for when you need to answer questions about current events in the news, current events or affairs.
+
+            Input should be a search query and a date from which to search news, so if the request is today, the search should be for todays date
+          parameters:
+            query: "query string for searching current news and events"
+            start_date: "start date from which to search for news in format YYYY-MM-DD"
+          answer: "The latest news about this is: "
+          error: "ERROR: Had trouble retrieving the news!"
+        stock_data:
+          description: |
+            An API for MarketStack stock data.  You need to call it using the stock ticker.  You can optionally also provide a specific date.
+          parameters:
+            ticker: "ticker for share or stock query"
+            date: "date for data in format YYYY-MM-DD"
+          answer: "Ticker %{ticker} had a day close of %{close} on %{date}, with a high of %{high} and a low of %{low}"
+          error: "ERROR: Had trouble retrieving information from Market Stack for stock market information!"
+        wikipedia:
+          description: |
+            A wrapper around Wikipedia.
+
+            Useful for when you need to answer general questions about
+            people, places, companies, facts, historical events, or other subjects.
+
+            Input should be a search query
+          parameters:
+            query: "query string for wikipedia search"
+          answer: "The relevant wikipedia page has the following summary: '%{summary}' and the article can be found at this url link: %{url}"
+          error: "ERROR: Had trouble retrieving information from Wikipedia!"
+      agent:
+        handle_function_call:
+          answer: "The answer is %{result}."
+        call_function:
+          error: "There was something wrong with your function arguments"
+        final_thought_answer:
+          opener: "To answer the question I will use these step by step instructions.\n\n"
+          thought_declaration: "I will use the %{function_name} function to calculate the answer with arguments %{arguments}.\n\n"
+          final_thought: "%{thoughts} Based on the above, I will now answer the question, this message will only be seen by me so answer with the assumption with that the user has not seen this message."
+        
     errors:
       general: "Sorry, I'm not well right now. Lets talk some other time. Meanwhile, please ask the admin to check the logs, thank you!"
       retries: "I've tried working out a response for you several times, but ultimately failed.  Please contact the admin if this persists, thank you!"
